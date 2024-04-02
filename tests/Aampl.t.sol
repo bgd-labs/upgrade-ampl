@@ -38,6 +38,7 @@ contract AamplTest is Test {
     _fundAddress(AaveV2EthereumAssets.AMPL_A_TOKEN, 1e9);
 
     vm.prank(aAMPL_WHALE);
+    vm.expectRevert(bytes('BURNING_IS_BRICKED'));
     AaveV2Ethereum.POOL.withdraw(AaveV2EthereumAssets.AMPL_UNDERLYING, 1e9, address(42));
   }
 
@@ -51,6 +52,7 @@ contract AamplTest is Test {
 
   function test_transfer() public {
     vm.prank(aAMPL_WHALE);
+    vm.expectRevert(bytes('TRANSFER_IS_BRICKED'));
     IERC20(AaveV2EthereumAssets.AMPL_A_TOKEN).transfer(address(42), 1e9);
   }
 
