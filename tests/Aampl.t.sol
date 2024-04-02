@@ -3,7 +3,7 @@ pragma solidity ^0.6.0;
 
 import {Test} from 'forge-std/Test.sol';
 import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
-import {AAmplToken} from '../src/etherscan/1_0x6fBC3BE5ee5273598d1491D41bB45F6d05a7541A/AAmplToken/contracts/protocol/tokenization/ampl/AAmplToken.sol';
+import {AAmplToken, ILendingPool as OldILendingPool} from '../src/etherscan/1_0x6fBC3BE5ee5273598d1491D41bB45F6d05a7541A/AAmplToken/contracts/protocol/tokenization/ampl/AAmplToken.sol';
 import {IERC20} from '../src/etherscan/1_0x6fBC3BE5ee5273598d1491D41bB45F6d05a7541A/AAmplToken/contracts/dependencies/openzeppelin/contracts/IERC20.sol';
 
 contract AamplTest is Test {
@@ -14,6 +14,19 @@ contract AamplTest is Test {
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 19561616);
+    AAmplToken impl = new AAmplToken(
+      OldILendingPool(address(AaveV2Ethereum.POOL)),
+      AaveV2EthereumAssets.AMPL_UNDERLYING,
+      address(AaveV2Ethereum.COLLECTOR),
+      'Ampl',
+      'Ampl',
+      AaveV2Ethereum.DEFAULT_INCENTIVES_CONTROLLER
+    );
+    vm.prank(AaveV2Ethereum.POOL_ADMIN);
+    AaveV2Ethereum.POOL_CONFIGURATOR.updateAToken(
+      AaveV2EthereumAssets.AMPL_UNDERLYING,
+      address(impl)
+    );
   }
 
   function _fundAddress(address receiver, uint256 amount) internal {
