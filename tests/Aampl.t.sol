@@ -60,6 +60,7 @@ contract AamplTest is Test {
     vm.prank(aAMPL_WHALE);
     IERC20(AaveV2EthereumAssets.AMPL_A_TOKEN).approve(address(this), 1e9);
 
+    vm.expectRevert(bytes('TRANSFER_IS_BRICKED'));
     IERC20(AaveV2EthereumAssets.AMPL_A_TOKEN).transferFrom(aAMPL_WHALE, address(42), 1e9);
   }
 
