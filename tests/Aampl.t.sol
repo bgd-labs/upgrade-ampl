@@ -41,6 +41,13 @@ contract AamplTest is Test {
     IERC20(AaveV2EthereumAssets.AMPL_A_TOKEN).transfer(address(42), 1e9);
   }
 
+  function test_transferFrom() public {
+    vm.prank(aAMPL_WHALE);
+    IERC20(AaveV2EthereumAssets.AMPL_A_TOKEN).approve(address(this), 1e9);
+
+    IERC20(AaveV2EthereumAssets.AMPL_A_TOKEN).transferFrom(aAMPL_WHALE, address(42), 1e9);
+  }
+
   function test_liquidation() public {
     _fundAddress(address(this), 5000e9);
 
