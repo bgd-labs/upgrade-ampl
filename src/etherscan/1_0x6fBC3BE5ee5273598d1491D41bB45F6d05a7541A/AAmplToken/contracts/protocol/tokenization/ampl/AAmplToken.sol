@@ -246,7 +246,7 @@ contract AAmplToken is VersionedInitializable, IncentivizedERC20, IAToken {
     uint256 amount,
     uint256 index
   ) external override onlyLendingPool {
-    require(false, 'BURNING_IS_BRICKED');
+    require(false, 'BURNING_IS_DISABLED');
     uint256 amountScaled = amount.rayDiv(index);
     require(amountScaled != 0, Errors.CT_INVALID_BURN_AMOUNT);
 
@@ -275,7 +275,7 @@ contract AAmplToken is VersionedInitializable, IncentivizedERC20, IAToken {
     uint256 amount,
     uint256 index
   ) external override onlyLendingPool returns (bool) {
-    require(false, 'MINTING_IS_BRICKED');
+    require(false, 'MINTING_IS_DISABLED');
     uint256 previousBalanceInternal = super.balanceOf(user);
 
     uint256 amountScaled = amount.rayDiv(index);
@@ -353,7 +353,7 @@ contract AAmplToken is VersionedInitializable, IncentivizedERC20, IAToken {
     onlyLendingPool
     returns (uint256)
   {
-    require(false, 'FLASHLOANING_IS_BRICKED');
+    require(false, 'FLASHLOANING_IS_DISABLED');
     IERC20(UNDERLYING_ASSET_ADDRESS).safeTransfer(target, amount);
     return amount;
   }
@@ -409,7 +409,7 @@ contract AAmplToken is VersionedInitializable, IncentivizedERC20, IAToken {
     uint256 amount,
     bool validate
   ) internal {
-    require(false, 'TRANSFER_IS_BRICKED');
+    require(false, 'TRANSFER_IS_DISABLED');
     uint256 index = POOL.getReserveNormalizedIncome(UNDERLYING_ASSET_ADDRESS);
     uint256 amountScaled = amount.rayDiv(index);
 

@@ -38,7 +38,7 @@ contract AamplTest is Test {
     _fundAddress(AaveV2EthereumAssets.AMPL_A_TOKEN, 1e9);
 
     vm.prank(aAMPL_WHALE);
-    vm.expectRevert(bytes('BURNING_IS_BRICKED'));
+    vm.expectRevert(bytes('BURNING_IS_DISABLED'));
     AaveV2Ethereum.POOL.withdraw(AaveV2EthereumAssets.AMPL_UNDERLYING, 1e9, address(42));
   }
 
@@ -52,7 +52,7 @@ contract AamplTest is Test {
 
   function test_transfer() public {
     vm.prank(aAMPL_WHALE);
-    vm.expectRevert(bytes('TRANSFER_IS_BRICKED'));
+    vm.expectRevert(bytes('TRANSFER_IS_DISABLED'));
     IERC20(AaveV2EthereumAssets.AMPL_A_TOKEN).transfer(address(42), 1e9);
   }
 
@@ -60,7 +60,7 @@ contract AamplTest is Test {
     vm.prank(aAMPL_WHALE);
     IERC20(AaveV2EthereumAssets.AMPL_A_TOKEN).approve(address(this), 1e9);
 
-    vm.expectRevert(bytes('TRANSFER_IS_BRICKED'));
+    vm.expectRevert(bytes('TRANSFER_IS_DISABLED'));
     IERC20(AaveV2EthereumAssets.AMPL_A_TOKEN).transferFrom(aAMPL_WHALE, address(42), 1e9);
   }
 
@@ -77,6 +77,28 @@ contract AamplTest is Test {
       vAMPL_LIQUIDATABLE,
       type(uint256).max,
       false
+    );
+  }
+
+  function test_flash() public {
+    _fundAddress(address(AaveV2EthereumAssets.AMPL_A_TOKEN), 5000e9);
+
+    address[] memory assets = new address[](1);
+    assets[0] = AaveV2EthereumAssets.AMPL_UNDERLYING;
+    uint256[] memory amounts = new uint256[](1);
+    amounts[0] = 10e9;
+    uint256[] memory modes = new uint256[](1);
+    modes[0] = 0;
+
+    vm.expectRevert(bytes('FLASHLOANING_IS_DISABLED'));
+    AaveV2Ethereum.POOL.flashLoan(
+      address(this),
+      assets,
+      amounts,
+      modes,
+      address(this),
+      bytes(''),
+      0
     );
   }
 }
