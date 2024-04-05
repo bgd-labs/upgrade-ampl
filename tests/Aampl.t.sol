@@ -18,10 +18,11 @@ contract AamplTest is Test {
       OldILendingPool(address(AaveV2Ethereum.POOL)),
       AaveV2EthereumAssets.AMPL_UNDERLYING,
       address(AaveV2Ethereum.COLLECTOR),
-      'Ampl',
-      'Ampl',
+      'Aave interest bearing AMPL',
+      'aAMPL',
       AaveV2Ethereum.DEFAULT_INCENTIVES_CONTROLLER
     );
+    impl.initialize(9, 'Aave interest bearing AMPL', 'aAMPL');
     vm.prank(AaveV2Ethereum.POOL_ADMIN);
     AaveV2Ethereum.POOL_CONFIGURATOR.updateAToken(
       AaveV2EthereumAssets.AMPL_UNDERLYING,
