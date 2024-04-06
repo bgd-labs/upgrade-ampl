@@ -143,7 +143,7 @@ contract AAmplToken is VersionedInitializable, IncentivizedERC20, IAToken {
   bytes32 public constant PERMIT_TYPEHASH =
     keccak256('Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)');
 
-  uint256 public constant ATOKEN_REVISION = 0x1;
+  uint256 public constant ATOKEN_REVISION = 0x2;
   address public immutable UNDERLYING_ASSET_ADDRESS;
   address public immutable RESERVE_TREASURY_ADDRESS;
   ILendingPool public immutable POOL;
@@ -246,6 +246,7 @@ contract AAmplToken is VersionedInitializable, IncentivizedERC20, IAToken {
     uint256 amount,
     uint256 index
   ) external override onlyLendingPool {
+    require(false, 'BURNING_IS_DISABLED');
     uint256 amountScaled = amount.rayDiv(index);
     require(amountScaled != 0, Errors.CT_INVALID_BURN_AMOUNT);
 
@@ -274,6 +275,7 @@ contract AAmplToken is VersionedInitializable, IncentivizedERC20, IAToken {
     uint256 amount,
     uint256 index
   ) external override onlyLendingPool returns (bool) {
+    require(false, 'MINTING_IS_DISABLED');
     uint256 previousBalanceInternal = super.balanceOf(user);
 
     uint256 amountScaled = amount.rayDiv(index);
@@ -351,6 +353,7 @@ contract AAmplToken is VersionedInitializable, IncentivizedERC20, IAToken {
     onlyLendingPool
     returns (uint256)
   {
+    require(false, 'FLASHLOANING_IS_DISABLED');
     IERC20(UNDERLYING_ASSET_ADDRESS).safeTransfer(target, amount);
     return amount;
   }
@@ -406,6 +409,7 @@ contract AAmplToken is VersionedInitializable, IncentivizedERC20, IAToken {
     uint256 amount,
     bool validate
   ) internal {
+    require(false, 'TRANSFER_IS_DISABLED');
     uint256 index = POOL.getReserveNormalizedIncome(UNDERLYING_ASSET_ADDRESS);
     uint256 amountScaled = amount.rayDiv(index);
 

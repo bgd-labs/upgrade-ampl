@@ -3,7 +3,7 @@ pragma solidity ^0.6.0;
 
 import {Test} from 'forge-std/Test.sol';
 import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
-import {AAmplToken} from '../src/etherscan/1_0x6fBC3BE5ee5273598d1491D41bB45F6d05a7541A/AAmplToken/contracts/protocol/tokenization/ampl/AAmplToken.sol';
+import {AAmplToken, ILendingPool as OldILendingPool} from '../src/etherscan/1_0x6fBC3BE5ee5273598d1491D41bB45F6d05a7541A/AAmplToken/contracts/protocol/tokenization/ampl/AAmplToken.sol';
 import {IERC20} from '../src/etherscan/1_0x6fBC3BE5ee5273598d1491D41bB45F6d05a7541A/AAmplToken/contracts/dependencies/openzeppelin/contracts/IERC20.sol';
 
 contract AamplTest is Test {
@@ -14,6 +14,20 @@ contract AamplTest is Test {
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 19561616);
+    AAmplToken impl = new AAmplToken(
+      OldILendingPool(address(AaveV2Ethereum.POOL)),
+      AaveV2EthereumAssets.AMPL_UNDERLYING,
+      address(AaveV2Ethereum.COLLECTOR),
+      'Aave interest bearing AMPL',
+      'aAMPL',
+      AaveV2Ethereum.DEFAULT_INCENTIVES_CONTROLLER
+    );
+    impl.initialize(9, 'Aave interest bearing AMPL', 'aAMPL');
+    vm.prank(AaveV2Ethereum.POOL_ADMIN);
+    AaveV2Ethereum.POOL_CONFIGURATOR.updateAToken(
+      AaveV2EthereumAssets.AMPL_UNDERLYING,
+      address(impl)
+    );
   }
 
   function _fundAddress(address receiver, uint256 amount) internal {
@@ -25,6 +39,7 @@ contract AamplTest is Test {
     _fundAddress(AaveV2EthereumAssets.AMPL_A_TOKEN, 1e9);
 
     vm.prank(aAMPL_WHALE);
+    vm.expectRevert(bytes('BURNING_IS_DISABLED'));
     AaveV2Ethereum.POOL.withdraw(AaveV2EthereumAssets.AMPL_UNDERLYING, 1e9, address(42));
   }
 
@@ -38,6 +53,7 @@ contract AamplTest is Test {
 
   function test_transfer() public {
     vm.prank(aAMPL_WHALE);
+    vm.expectRevert(bytes('TRANSFER_IS_DISABLED'));
     IERC20(AaveV2EthereumAssets.AMPL_A_TOKEN).transfer(address(42), 1e9);
   }
 
@@ -45,6 +61,7 @@ contract AamplTest is Test {
     vm.prank(aAMPL_WHALE);
     IERC20(AaveV2EthereumAssets.AMPL_A_TOKEN).approve(address(this), 1e9);
 
+    vm.expectRevert(bytes('TRANSFER_IS_DISABLED'));
     IERC20(AaveV2EthereumAssets.AMPL_A_TOKEN).transferFrom(aAMPL_WHALE, address(42), 1e9);
   }
 
@@ -61,6 +78,28 @@ contract AamplTest is Test {
       vAMPL_LIQUIDATABLE,
       type(uint256).max,
       false
+    );
+  }
+
+  function test_flash() public {
+    _fundAddress(address(AaveV2EthereumAssets.AMPL_A_TOKEN), 5000e9);
+
+    address[] memory assets = new address[](1);
+    assets[0] = AaveV2EthereumAssets.AMPL_UNDERLYING;
+    uint256[] memory amounts = new uint256[](1);
+    amounts[0] = 10e9;
+    uint256[] memory modes = new uint256[](1);
+    modes[0] = 0;
+
+    vm.expectRevert(bytes('FLASHLOANING_IS_DISABLED'));
+    AaveV2Ethereum.POOL.flashLoan(
+      address(this),
+      assets,
+      amounts,
+      modes,
+      address(this),
+      bytes(''),
+      0
     );
   }
 }
