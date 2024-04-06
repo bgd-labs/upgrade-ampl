@@ -15,7 +15,7 @@ deploy-pk :; forge script ${contract} --rpc-url ${chain} $(if ${dry},--sender 0x
 
 
 # Utilities
-download :; cast etherscan-source --chain ${chain} -d src/etherscan/${chain}_${address} ${address}
+download :; cast etherscan-source --chain ${chain} -d raw/etherscan/${chain}_${address} ${address}
 git-diff :
 	@mkdir -p diffs
 	@npx prettier ${before} ${after} --write

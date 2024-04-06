@@ -41,8 +41,8 @@ library WadRayMath {
   }
 
   /**
- * @return One way, 1e9
- **/
+   * @return One way, 1e9
+   **/
 
   function way() internal pure returns (uint256) {
     return WAD;
@@ -63,18 +63,18 @@ library WadRayMath {
   }
 
   /**
- * @return Half way, 1e9/2
- **/
+   * @return Half way, 1e9/2
+   **/
   function halfWay() internal pure returns (uint256) {
     return halfWAY;
   }
 
   /**
- * @dev Multiplies two way, rounding half up to the nearest way
- * @param a Way
- * @param b Way
- * @return The result of a*b, in way
- **/
+   * @dev Multiplies two way, rounding half up to the nearest way
+   * @param a Way
+   * @param b Way
+   * @return The result of a*b, in way
+   **/
   function wayMul(uint256 a, uint256 b) internal pure returns (uint256) {
     if (a == 0 || b == 0) {
       return 0;
@@ -219,14 +219,13 @@ library WadRayMath {
   }
 
   /**
-  * @dev Converts way up to wad
-  * @param a Way
-  * @return a converted in wad
-  **/
+   * @dev Converts way up to wad
+   * @param a Way
+   * @return a converted in wad
+   **/
   function wayToWad(uint256 a) internal pure returns (uint256) {
     uint256 result = a * WAY_WAD_RATIO;
     require(result / WAY_WAD_RATIO == a, Errors.MATH_MULTIPLICATION_OVERFLOW);
     return result;
   }
-
 }
