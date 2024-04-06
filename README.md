@@ -1,56 +1,11 @@
-# BGD forge template
+# aAMPL (aToken) v2 Ethereum upgrade
 
-Basic template with prettier and rest configuration
+Repository containing an upgrade for the aAMPL implementation on Aave v2 Ethereum, simply halting transfers and withdrawals.
 
-To create a new project using this template run
+More context can be found [HERE](https://snapshot.org/#/aave.eth/proposal/0xb7226dd6441b67225924082215f7a512bfd98252897ee43a879084e07ab53607) and the associated forum post.
 
-```shell
-$ forge init --template bgd-labs/bgd-forge-template my_new_project
-```
+## Contents
 
-## Recommended modules
-
-[bgd-labs/solidity-utils](https://github.com/bgd-labs/solidity-utils) - common contracts we use everywhere, ie transparent proxy and around
-
-[bgd-labs/aave-address-book](https://github.com/bgd-labs/aave-address-book) - the best and only source about all deployed Aave ecosystem related contracts across all the chains
-
-[bgd-labs/aave-helpers](https://github.com/bgd-labs/aave-helpers) - useful utils for integration, and not only testing related to Aave ecosystem contracts
-
-[Rari-Capital/solmate](https://github.com/Rari-Capital/solmate) - one of the best sources of base contracts for ERC20, ERC21, which will work with transparent proxy pattern out of the box
-
-[OpenZeppelin/openzeppelin-contracts](https://github.com/OpenZeppelin/openzeppelin-contracts) - another very reputable and well organized source of base contracts for tokens, access control and many others
-
-## Development
-
-This project uses [Foundry](https://getfoundry.sh). See the [book](https://book.getfoundry.sh/getting-started/installation.html) for detailed instructions on how to install and use Foundry.
-The template ships with sensible default so you can use default `foundry` commands without resorting to `MakeFile`.
-
-### Setup
-
-```sh
-cp .env.example .env
-forge install
-```
-
-### Test
-
-```sh
-forge test
-```
-
-## Advanced features
-
-### Diffing
-
-For contracts upgrading implementations it's quite important to diff the implementation code to spot potential issues and ensure only the intended changes are included.
-Therefore the `Makefile` includes some commands to streamline the diffing process.
-
-#### Download
-
-You can `download` the current contract code of a deployed contract via `make download chain=polygon address=0x00`. This will download the contract source for specified address to `src/etherscan/chain_address`. This command works for all chains with a etherscan compatible block explorer.
-
-#### Git diff
-
-You can `git-diff` a downloaded contract against your src via `make git-diff before=./etherscan/chain_address after=./src out=filename`. This command will diff the two folders via git patience algorithm and write the output to `diffs/filename.md`.
-
-**Caveat**: If the onchain implementation was verified using flatten, for generating the diff you need to flatten the new contract via `forge flatten` and supply the flattened file instead fo the whole `./src` folder.
+- The new implementation is a modification from production aAMPL, just reverting the operations to be halted. Can be found [HERE](https://github.com/bgd-labs/upgrade-ampl/blob/main/src/etherscan/1_0x6fBC3BE5ee5273598d1491D41bB45F6d05a7541A/AAmplToken/contracts/protocol/tokenization/ampl/AAmplToken.sol)
+- The contracts has been deployed [HERE](https://etherscan.io/address/0x1f32642b216d19daeb1531862647195a626f4193#code).
+- Code diffs between the current implementation and the new one can be found [HERE](https://github.com/bgd-labs/upgrade-ampl/blob/main/diffs/atoken_impl.md)
